@@ -7,13 +7,16 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RegisterReponse {
+public class RegisterResponse {
+  @NotBlank
+  @Size(min = 3, max = 100)
+  private String firstName;
   
   @NotBlank
   @Size(min = 3, max = 100)
   private String lastName;
   
   @NotBlank
-  @Size(min = 6, max = 100)
-  private String password;
+  @Size(min = 3, max = 100)
+  private String username;
 }
