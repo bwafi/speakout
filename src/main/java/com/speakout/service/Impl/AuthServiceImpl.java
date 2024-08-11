@@ -32,7 +32,6 @@ public class AuthServiceImpl implements AuthService {
       roleCurrent = roleRepository.save(roleUser);
     }
     
-    
     User user = User.builder()
         .firstName(registerRequest.getFirstName())
         .lastName(registerRequest.getLastName())
