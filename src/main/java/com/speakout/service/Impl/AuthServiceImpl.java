@@ -32,6 +32,7 @@ public class AuthServiceImpl implements AuthService {
       roleCurrent = roleRepository.save(roleUser);
     }
     
+    
     User user = User.builder()
         .firstName(registerRequest.getFirstName())
         .lastName(registerRequest.getLastName())
@@ -39,10 +40,12 @@ public class AuthServiceImpl implements AuthService {
         .role(roleCurrent)
         .build();
     
+    User response = userRepository.save(user);
+    
     return RegisterResponse.builder()
-        .firstName(user.getFirstName())
-        .lastName(user.getLastName())
-        .username(user.getUsername())
+        .firstName(response.getFirstName())
+        .lastName(response.getLastName())
+        .username(response.getUsername())
         .build();
   }
 }
