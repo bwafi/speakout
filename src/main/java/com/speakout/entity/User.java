@@ -5,9 +5,9 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.Instant;
+import java.util.Random;
 
 @Entity
 @Table(name = "users")
@@ -18,6 +18,12 @@ public class User {
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
+  
+  @Column(nullable = false)
+  private String firstName;
+  
+  @Column(nullable = false)
+  private String lastName;
   
   @Column(unique = true, nullable = false)
   private String username;
@@ -39,16 +45,21 @@ public class User {
   @JsonProperty("refresh_token")
   private String refreshToken;
   
-  @Column(name = "created_at")
+  @Column(name = "created_at", insertable = false)
   private Long craetedAt;
   
-  @Column(name = "updated_at")
+  @Column(name = "updated_at", insertable = false)
   private Long updatedAt;
   
   @PrePersist
   private void onPrePersist() {
     this.craetedAt = Instant.now().toEpochMilli();
     this.updatedAt = Instant.now().toEpochMilli();
+    
+    Random random = new Random();
+    int randomNumber = random.nextInt(1000);
+    
+    this.username = this.firstName.charAt(0) + "." + this.lastName + randomNumber;
   }
   
   @PreUpdate

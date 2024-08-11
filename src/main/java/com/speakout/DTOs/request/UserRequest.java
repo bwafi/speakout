@@ -18,7 +18,11 @@ public class UserRequest {
   
   @NotBlank
   @Size(min = 3, max = 100)
-  private String username;
+  private String firstName;
+  
+  @NotBlank
+  @Size(min = 3, max = 100)
+  private String lastName;
   
   @NotBlank
   @Size(min = 6, max = 100)
