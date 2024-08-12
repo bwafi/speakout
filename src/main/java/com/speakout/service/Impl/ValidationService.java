@@ -10,14 +10,15 @@ import java.util.Set;
 
 @Service
 public class ValidationService {
-   @Autowired
+  
+  @Autowired
   private Validator validator;
-   
-   public void validate(Object object) {
-     Set<ConstraintViolation<Object>> validate = validator.validate(object);
-     if(!validate.isEmpty()) {
-       throw new ConstraintViolationException(validate);
-     }
-   }
+  
+  public void validate(Object object) {
+    Set<ConstraintViolation<Object>> validate = validator.validate(object);
+    if (!validate.isEmpty()) {
+      throw new ConstraintViolationException(validate);
+    }
+  }
   
 }
