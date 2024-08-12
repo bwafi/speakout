@@ -7,6 +7,7 @@ import com.speakout.entity.User;
 import com.speakout.enums.ERoles;
 import com.speakout.repository.RoleRepository;
 import com.speakout.repository.UserRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,8 +35,12 @@ class AuthServiceImplTest {
   @Mock
   private RoleRepository roleRepository;
   
+  @Mock
+  private ValidationService validationService;
+  
   @InjectMocks
   private AuthServiceImpl authService;
+  
   
   @Test
   void registerTest() {
@@ -115,6 +120,29 @@ class AuthServiceImplTest {
     verify(roleRepository, Mockito.times(1)).findById(1);
     verify(userRepository, Mockito.times(1)).save(user);
     verify(roleRepository, times(1)).save(roleUser);
+    
+  }
+  
+  
+  @Test
+  void registerWhenValidateFailedTest() {
+    RegisterRequest registerRequest = RegisterRequest.builder()
+        .firstName("")
+        .lastName("")
+        .password("")
+        .build();
+    
+    doThrow(ConstraintViolationException.class)
+        .when(validationService)
+        .validate(registerRequest);
+    
+    assertThrows(ConstraintViolationException.class, () -> {
+      authService.register(registerRequest);
+    });
+    
+    verify(roleRepository, never()).findById(1);
+    verify(userRepository, never()).save(any(User.class));
+    verify(roleRepository, never()).save(any(Role.class));
     
   }
 }

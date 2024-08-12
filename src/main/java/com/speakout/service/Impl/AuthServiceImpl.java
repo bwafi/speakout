@@ -20,8 +20,13 @@ public class AuthServiceImpl implements AuthService {
   @Autowired
   private RoleRepository roleRepository;
   
+  @Autowired
+  private ValidationService validationService;
+  
   @Override
   public RegisterResponse register(RegisterRequest registerRequest) {
+    validationService.validate(registerRequest);
+    
     Role roleCurrent = roleRepository.findById(1).orElse(null);
     
     Role roleUser = Role.builder()
