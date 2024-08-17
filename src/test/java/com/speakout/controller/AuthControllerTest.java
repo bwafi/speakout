@@ -2,7 +2,12 @@ package com.speakout.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.speakout.DTOs.request.RegisterRequest;
+import com.speakout.DTOs.response.RegisterResponse;
+import com.speakout.repository.UserRepository;
 import lombok.val;
+import org.aspectj.lang.annotation.After;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -27,11 +32,19 @@ class AuthControllerTest {
   @Autowired
   ObjectMapper objectMapper;
   
+  @Autowired
+  UserRepository userRepository;
+  
+  @AfterEach
+  void tearDown() {
+    userRepository.deleteAll();
+  }
+  
   @Test
   void registerSuccessTest() throws Exception {
     RegisterRequest registerRequest = RegisterRequest.builder()
         .firstName("Syahroni")
-        .lastName("bawafi")
+        .lastName("Bawafi")
         .password("rahasia123")
         .build();
     
@@ -44,7 +57,9 @@ class AuthControllerTest {
         status().isCreated()
     ).andExpectAll(
         jsonPath("$.statusCode").value(HttpStatus.CREATED.value()),
-        jsonPath("$.message").value("Successfully registered")
+        jsonPath("$.message").value("Successfully registered"),
+        jsonPath("$.data.firstName").value("Syahroni"),
+        jsonPath("$.data.lastName").value("Bawafi")
     );
   }
 }
