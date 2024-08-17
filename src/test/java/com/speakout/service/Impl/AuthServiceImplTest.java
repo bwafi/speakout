@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -34,6 +35,9 @@ class AuthServiceImplTest {
   
   @Mock
   private RoleRepository roleRepository;
+  
+  @Mock
+  private PasswordEncoder passwordEncoder;
   
   @Mock
   private ValidationService validationService;
@@ -69,6 +73,7 @@ class AuthServiceImplTest {
     
     when(roleRepository.findById(1)).thenReturn(Optional.of(roleUser));
     when(userRepository.save(Mockito.any(User.class))).thenReturn(user);
+    when(passwordEncoder.encode("rahasia")).thenReturn("PasswordEncode");
     
     RegisterResponse response = authService.register(registerRequest);
     
@@ -79,6 +84,7 @@ class AuthServiceImplTest {
     verify(roleRepository, Mockito.times(1)).findById(1);
     verify(userRepository, Mockito.times(1)).save(Mockito.any(User.class));
     verify(roleRepository, Mockito.times(0)).save(new Role());
+    verify(passwordEncoder, Mockito.times(1)).encode("rahasia");
   }
   
   

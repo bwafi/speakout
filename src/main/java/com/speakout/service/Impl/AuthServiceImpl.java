@@ -9,6 +9,7 @@ import com.speakout.repository.RoleRepository;
 import com.speakout.repository.UserRepository;
 import com.speakout.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +23,9 @@ public class AuthServiceImpl implements AuthService {
   
   @Autowired
   private ValidationService validationService;
+  
+  @Autowired
+  private PasswordEncoder passwordEncoder;
   
   @Override
   public RegisterResponse register(RegisterRequest registerRequest) {
@@ -41,7 +45,7 @@ public class AuthServiceImpl implements AuthService {
         .firstName(registerRequest.getFirstName())
         .lastName(registerRequest.getLastName())
         .username(registerRequest.getUsername())
-        .password(registerRequest.getPassword())
+        .password(passwordEncoder.encode(registerRequest.getPassword()))
         .role(roleCurrent)
         .build();
     

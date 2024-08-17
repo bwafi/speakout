@@ -9,11 +9,13 @@ import org.aspectj.lang.annotation.After;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,6 +47,7 @@ class AuthControllerTest {
     RegisterRequest registerRequest = RegisterRequest.builder()
         .firstName("Syahroni")
         .lastName("Bawafi")
+        .username("wapi")
         .password("rahasia123")
         .build();
     
@@ -69,6 +72,7 @@ class AuthControllerTest {
     RegisterRequest registerRequest = RegisterRequest.builder()
         .firstName("")
         .lastName("")
+        .username("")
         .password("")
         .build();
     
