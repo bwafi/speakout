@@ -57,11 +57,6 @@ public class User {
   private void onPrePersist() {
     this.craetedAt = Instant.now().toEpochMilli();
     this.updatedAt = Instant.now().toEpochMilli();
-    
-    Random random = new Random();
-    int randomNumber = random.nextInt(1000);
-    
-    this.username = this.firstName.charAt(0) + "." + this.lastName + randomNumber;
   }
   
   @PreUpdate
