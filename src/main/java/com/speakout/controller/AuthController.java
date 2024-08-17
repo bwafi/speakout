@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping(ApiUrl.REGISTER_URL)
+@RequestMapping(ApiUrl.AUTH_URL)
 public class AuthController {
   
   @Autowired
   private AuthService authService;
   
-  @PostMapping
+  @PostMapping(path = "/register")
   public ResponseEntity<WebResponse<RegisterResponse>> register(@RequestBody RegisterRequest registerRequest) {
     RegisterResponse response = authService.register(registerRequest);
     

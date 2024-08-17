@@ -36,7 +36,7 @@ public class User {
   @Lob
   private String bio;
   
-  @OneToOne
+  @ManyToOne
   @JoinColumn(name = "role_id", referencedColumnName = "id")
   private Role role;
   
