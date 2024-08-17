@@ -62,4 +62,25 @@ class AuthControllerTest {
         jsonPath("$.data.lastName").value("Bawafi")
     );
   }
+  
+  
+  @Test
+  void registerFailedTest() throws Exception {
+    RegisterRequest registerRequest = RegisterRequest.builder()
+        .firstName("")
+        .lastName("")
+        .password("")
+        .build();
+    
+    mockMvc.perform(
+        post("/api/v1/auth/register")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(registerRequest))
+    ).andExpect(
+        status().isBadRequest()
+    ).andExpectAll(
+        jsonPath("$.statusCode").value(HttpStatus.BAD_REQUEST.value())
+    );
+  }
 }
