@@ -1,4 +1,4 @@
-package com.speakout.DTOs.response;
+package com.speakout.DTOs.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -7,12 +7,14 @@ import lombok.Data;
 
 @Data
 @Builder
-public class RegisterResponse {
-  private String id;
+public class LoginRequest {
   
-  private String firstName;
-  
-  private String lastName;
-  
+  @NotBlank
+  @Size(min = 3, max = 100)
   private String username;
+  
+  @NotBlank
+  @Size(min = 6, max = 100)
+  private String password;
 }
+
