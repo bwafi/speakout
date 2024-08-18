@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Random;
 
 @Entity
@@ -41,11 +42,11 @@ public class User {
   private Role role;
   
   @OneToOne
-  @JoinColumn(name = "profil_picture_id", referencedColumnName = "id")
+  @JoinColumn(name = "profile_picture_id", referencedColumnName = "id")
   private ProfilePicture profilePicture;
   
-  @JsonProperty("refresh_token")
-  private String refreshToken;
+  @OneToMany(mappedBy = "user")
+  private List<RefreshToken> refreshToken;
   
   @Column(name = "created_at", insertable = false)
   private Long craetedAt;
