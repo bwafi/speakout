@@ -25,6 +25,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -51,19 +52,16 @@ public class AuthServiceImpl implements AuthService {
   private JwtService jwtService;
   
   
+  @Transactional
   @Override
   public RegisterResponse register(RegisterRequest registerRequest) {
     validationService.validate(registerRequest);
-    
-    Role roleCurrent = roleRepository.findById(1).orElse(null);
     
     Role roleUser = Role.builder()
         .name(ERoles.ROLE_USER)
         .build();
     
-    if (roleCurrent == null) {
-      roleCurrent = roleRepository.save(roleUser);
-    }
+    Role roleCurrent = roleRepository.findById(1).orElseGet(() -> roleRepository.save(roleUser));
     
     User user = User.builder()
         .firstName(registerRequest.getFirstName())
@@ -86,6 +84,8 @@ public class AuthServiceImpl implements AuthService {
   @Transactional
   @Override
   public LoginResponse login(LoginRequest loginRequest) {
+    validationService.validate(loginRequest);
+    
     Authentication authenticate = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
     );
@@ -94,13 +94,13 @@ public class AuthServiceImpl implements AuthService {
     
     UserDetailsImpl userDetails = (UserDetailsImpl) authenticate.getPrincipal();
     
-    String accessToken = jwtService.generateAccessToken(userDetails);
     String refreshToken = jwtService.generateRefreshToken(userDetails);
+    String accessToken = jwtService.generateAccessToken(userDetails);
     
     saveRefreshToken(userDetails.getUsername(), refreshToken);
     
     Date expiresRefreshToken = jwtService.extractExpiration(refreshToken, false);
-    Date expiresAccessToken = jwtService.extractExpiration(refreshToken, true);
+    Date expiresAccessToken = jwtService.extractExpiration(accessToken, true);
     
     return LoginResponse.builder()
         .username(userDetails.getUsername())
@@ -126,7 +126,6 @@ public class AuthServiceImpl implements AuthService {
     
     refreshTokenRepository.save(refreshToken);
   }
-  
   
   
 }
