@@ -1,6 +1,8 @@
 package com.speakout.service.Impl;
 
+import com.speakout.DTOs.request.LoginRequest;
 import com.speakout.DTOs.request.RegisterRequest;
+import com.speakout.DTOs.response.LoginResponse;
 import com.speakout.DTOs.response.RegisterResponse;
 import com.speakout.entity.Role;
 import com.speakout.entity.User;
@@ -57,5 +59,10 @@ public class AuthServiceImpl implements AuthService {
         .lastName(response.getLastName())
         .username(response.getUsername())
         .build();
+  }
+  
+  @Override
+  public LoginResponse login(LoginRequest loginRequest) {
+    return null;
   }
 }
