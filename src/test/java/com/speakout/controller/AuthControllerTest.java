@@ -70,7 +70,7 @@ class AuthControllerTest {
     RegisterRequest registerRequest = RegisterRequest.builder()
         .firstName("Syahroni")
         .lastName("Bawafi")
-        .username("wapi")
+        .username("wapi1")
         .password("rahasia123")
         .build();
     
@@ -83,7 +83,7 @@ class AuthControllerTest {
         status().isCreated()
     ).andExpectAll(
         jsonPath("$.statusCode").value(HttpStatus.CREATED.value()),
-        jsonPath("$.message").value("Successfully registered"),
+        jsonPath("$.message").value("Successfully registered user"),
         jsonPath("$.data.firstName").value("Syahroni"),
         jsonPath("$.data.lastName").value("Bawafi")
     );
@@ -134,6 +134,49 @@ class AuthControllerTest {
       Assertions.assertEquals(HttpStatus.OK.value(), loginResponse.getStatusCode());
       Assertions.assertEquals("Successfully login", loginResponse.getMessage());
     });
+    
+  }
+  
+  
+  @Test
+  void loginFailed_whenWrongPasswordTest() throws Exception {
+    LoginRequest loginRequest = LoginRequest.builder()
+        .username("wapi")
+        .password("wrong password")
+        .build();
+    
+    mockMvc.perform(
+        post("/api/v1/auth/login")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(loginRequest))
+    ).andExpect(
+        status().isUnauthorized()
+    ).andExpectAll(
+        jsonPath("$.statusCode").value(HttpStatus.UNAUTHORIZED.value()),
+        jsonPath("$.message").value("Username or password is invalid")
+    );
+    
+  }
+  
+  
+  @Test
+  void loginFailed_whenValidationErrorTest() throws Exception {
+    LoginRequest loginRequest = LoginRequest.builder()
+        .username("")
+        .password("")
+        .build();
+    
+    mockMvc.perform(
+        post("/api/v1/auth/login")
+            .accept(MediaType.APPLICATION_JSON)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(objectMapper.writeValueAsString(loginRequest))
+    ).andExpect(
+        status().isBadRequest()
+    ).andExpectAll(
+        jsonPath("$.statusCode").value(HttpStatus.BAD_REQUEST.value())
+    );
     
   }
   

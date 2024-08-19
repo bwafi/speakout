@@ -19,7 +19,7 @@ public class GlobalExceptionController {
   
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<WebResponse<String>> handleBadCredentialsException(BadCredentialsException exception) {
-    WebResponse<String> error = WebResponse.error(HttpStatus.UNAUTHORIZED.value(), exception.getMessage());
+    WebResponse<String> error = WebResponse.error(HttpStatus.UNAUTHORIZED.value(), "Username or password is invalid");
     return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
   }
 }
