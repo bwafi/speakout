@@ -11,7 +11,7 @@ import com.speakout.enums.ERoles;
 import com.speakout.repository.RefreshTokenRepository;
 import com.speakout.repository.RoleRepository;
 import com.speakout.repository.UserRepository;
-import com.speakout.security.JwtService;
+import com.speakout.security.jwt.JwtService;
 import com.speakout.service.AuthService;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class AuthServiceImpl implements AuthService {
