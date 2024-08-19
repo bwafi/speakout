@@ -22,6 +22,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     User userByUsername = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not Found"));
     
     return UserDetailsImpl.builder()
+        .id(userByUsername.getId())
         .username(userByUsername.getUsername())
         .password(userByUsername.getPassword())
         .authorities(List.of(new SimpleGrantedAuthority(userByUsername.getRole().toString()))) // add role o UserDetail with SimpleGrantedAuthority

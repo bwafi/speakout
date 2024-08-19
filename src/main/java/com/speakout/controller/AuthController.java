@@ -1,6 +1,8 @@
 package com.speakout.controller;
 
+import com.speakout.DTOs.request.LoginRequest;
 import com.speakout.DTOs.request.RegisterRequest;
+import com.speakout.DTOs.response.LoginResponse;
 import com.speakout.DTOs.response.RegisterResponse;
 import com.speakout.DTOs.response.WebResponse;
 import com.speakout.constant.ApiUrl;
@@ -24,6 +26,13 @@ public class AuthController {
   public ResponseEntity<WebResponse<RegisterResponse>> register(@RequestBody RegisterRequest registerRequest) {
     RegisterResponse response = authService.register(registerRequest);
     
-    return ResponseEntity.status(HttpStatus.CREATED).body(WebResponse.success(HttpStatus.CREATED.value(), "Successfully registered", response));
+    return ResponseEntity.status(HttpStatus.CREATED).body(WebResponse.success(HttpStatus.CREATED.value(), "Successfully registered user", response));
+  }
+  
+  @PostMapping(path = "/login")
+  public ResponseEntity<WebResponse<LoginResponse>> login(@RequestBody LoginRequest loginRequest) {
+    LoginResponse response = authService.login(loginRequest);
+    
+    return ResponseEntity.status(HttpStatus.OK).body(WebResponse.success(HttpStatus.OK.value(), "Successfully login", response));
   }
 }

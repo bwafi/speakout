@@ -81,7 +81,6 @@ public class AuthServiceImpl implements AuthService {
         .build();
   }
   
-  @Transactional
   @Override
   public LoginResponse login(LoginRequest loginRequest) {
     validationService.validate(loginRequest);
@@ -92,18 +91,19 @@ public class AuthServiceImpl implements AuthService {
     
     SecurityContextHolder.getContext().setAuthentication(authenticate); // save Info User to Security Context
     
-    UserDetailsImpl userDetails = (UserDetailsImpl) authenticate.getPrincipal();
+    UserDetailsImpl userDetailsImpl = (UserDetailsImpl) authenticate.getPrincipal();
     
-    String refreshToken = jwtService.generateRefreshToken(userDetails);
-    String accessToken = jwtService.generateAccessToken(userDetails);
+    String refreshToken = jwtService.generateRefreshToken(userDetailsImpl);
+    String accessToken = jwtService.generateAccessToken(userDetailsImpl);
     
-    saveRefreshToken(userDetails.getUsername(), refreshToken);
+    saveRefreshToken(userDetailsImpl.getUsername(), refreshToken);
+    
     
     Date expiresRefreshToken = jwtService.extractExpiration(refreshToken, false);
     Date expiresAccessToken = jwtService.extractExpiration(accessToken, true);
     
     return LoginResponse.builder()
-        .username(userDetails.getUsername())
+        .username(userDetailsImpl.getUsername())
         .accessToken(accessToken)
         .refreshToken(refreshToken)
         .accessTokenExpiration(expiresAccessToken.toInstant().toEpochMilli())
@@ -114,14 +114,13 @@ public class AuthServiceImpl implements AuthService {
   }
   
   protected void saveRefreshToken(String username, String token) {
-    User userByUsername = userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("Username not found"));
-    
-    Date expiresRefreshToken = jwtService.extractExpiration(token, false);
+    User userByUsername = userRepository.findByUsername(username)
+        .orElseThrow(() -> new UsernameNotFoundException("Username not found"));
     
     RefreshToken refreshToken = RefreshToken.builder()
         .user(userByUsername)
         .refreshToken(token)
-        .expiresIn(expiresRefreshToken.toInstant().toEpochMilli())
+        .expiresIn(jwtService.extractExpiration(token, false).toInstant().toEpochMilli())
         .build();
     
     refreshTokenRepository.save(refreshToken);

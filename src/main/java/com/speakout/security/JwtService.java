@@ -1,5 +1,6 @@
 package com.speakout.security;
 
+import com.speakout.service.Impl.UserDetailsImpl;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,11 +34,11 @@ public class JwtService {
   @Value("${security.jwt.refresh-token-expiration}")
   private long refreshTokenExpiration;
   
-  public String generateAccessToken(UserDetails userDetails) {
+  public String generateAccessToken(UserDetailsImpl userDetails) {
     return buildToken(new HashMap<>(), userDetails, accessTokenExpiration, accessTokenSecretKey);
   }
   
-  public String generateRefreshToken(UserDetails userDetails) {
+  public String generateRefreshToken(UserDetailsImpl userDetails) {
     return buildToken(new HashMap<>(), userDetails, refreshTokenExpiration, refreshTokenSecretKey);
   }
   
@@ -50,7 +51,10 @@ public class JwtService {
     return extractClaims(token, Claims::getSubject, isAccessToken);
   }
   
-  private String buildToken(Map<String, Object> extrasClaims, UserDetails userDetails, long expiration, String secretKey) {
+  private String buildToken(Map<String, Object> extrasClaims, UserDetailsImpl userDetails, long expiration, String secretKey) {
+    
+    extrasClaims.put("id", userDetails.getId());
+    
     return Jwts.builder()
         .claims(extrasClaims)
         .subject(userDetails.getUsername())
@@ -70,7 +74,7 @@ public class JwtService {
   
   private Claims extractAllClaimsFromToken(String token, boolean isAccessToken) {
     return Jwts.parser()
-        .verifyWith(getSignKey(isAccessToken ?  accessTokenSecretKey : refreshTokenSecretKey))
+        .verifyWith(getSignKey(isAccessToken ? accessTokenSecretKey : refreshTokenSecretKey))
         .build()
         .parseSignedClaims(token)
         .getPayload();

@@ -19,6 +19,7 @@ public class RefreshToken {
   @GeneratedValue(strategy = GenerationType.UUID)
   private String id;
   
+  @Lob
   private String refreshToken;
   
   private Long expiresIn;
