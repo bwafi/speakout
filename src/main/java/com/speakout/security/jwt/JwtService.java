@@ -7,6 +7,7 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -64,6 +65,11 @@ public class JwtService {
   
   private boolean isTokenExpired(String token, boolean isAccessToken) {
     return extractExpiration(token, isAccessToken).before(new Date());
+  }
+  
+  public boolean validateToken(String token, UserDetails userDetails, boolean isAccessToken) {
+    String username = extractUsername(token, isAccessToken);
+    return (username.equals(userDetails.getUsername()) && !isTokenExpired(token, isAccessToken));
   }
   
   public Date extractExpiration(String token, boolean isAccessToken) {
